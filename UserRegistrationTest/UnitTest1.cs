@@ -26,5 +26,28 @@ namespace UserRegistrationTest
             var lastName = "Yadav";
             var result = user.ValidateLastName(lastName); ;
         }
+
+
+        [TestMethod]
+        [DataRow("jrm@gmail.com")]
+        [DataRow("jrm.cg@gmail.co.in")]
+        [DataRow("jrm@gmail.co.in")]
+        [DataRow("jrm100@gmail.com")]
+        [DataRow("jrm-nit@1mg.co.in")]
+        public void TestEmailValidation_ValidEmails(string email)
+        {
+            //Arrange
+            User user = new User();
+            bool expected = true;
+
+            //Act
+            bool actual = user.ValidateEmail(email);
+
+            //Assert
+            Assert.AreEqual(expected, actual);
+        }
+
+
+
     }
 }
