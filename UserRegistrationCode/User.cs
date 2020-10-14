@@ -5,8 +5,10 @@ using System.Text.RegularExpressions;
 
 namespace UserRegistrationCode
 {
+
+
+
     public class User
-   
     {
         public string firstName { get; set; }
         private string _regexFirstName = "^[A-Z][a-z]{2,}$";
@@ -17,7 +19,7 @@ namespace UserRegistrationCode
         private string _regexEmail = "^[A-Za-z0-9]+([._+-][A-Za-z0-9]+)*[@][A-Za-z0-9]+[.][a-zA-Z]{2,3}([.][a-zA-Z]{2})?$";
 
         public string password { get; set; }
-        private string _regexPassword = "";
+        private string _regexPassword = "^(?=.*[A-Z])[\\S]{8,}$";
 
         public string mobileNumber { get; set; }
         private string _regexMobileNumber = "^[0-9]{2}[ ][1-9][0-9]{9}$";
@@ -38,6 +40,10 @@ namespace UserRegistrationCode
             return Regex.IsMatch(email, _regexEmail);
         }
 
+        public bool ValidatePassword(string password)
+        {
+            return Regex.IsMatch(password, _regexPassword);
+        }
         public bool ValidateMobileNumber(string mobileNumber)
         {
             return Regex.IsMatch(mobileNumber, _regexMobileNumber);
