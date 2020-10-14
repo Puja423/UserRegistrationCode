@@ -47,7 +47,20 @@ namespace UserRegistrationTest
             Assert.AreEqual(expected, actual);
         }
 
+        [TestMethod]
+        [DataRow("91 6231230127")]
+        public void TestPhNumberValidation_ValidNumbers(string phNum)
+        {
+            //Arrange
+            User user = new User();
+            bool expected = true;
 
+            //Act
+            bool actual = user.ValidateMobileNumber(phNum);
+
+            //Assert
+            Assert.AreEqual(expected, actual);
+        }
 
     }
 }
