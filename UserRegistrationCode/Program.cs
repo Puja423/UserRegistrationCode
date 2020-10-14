@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Security.Cryptography.X509Certificates;
+using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
-
 namespace UserRegistrationCode
 {
     public class Program
@@ -9,20 +8,7 @@ namespace UserRegistrationCode
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome to User Registration!");
-
-
             var user = new User();
-            // AskFirstName(user);
-            // AskLastName(user);
-            //AskEmail(user);
-            //AskMobileNumber(user);
-            AskPassword(user);
-
-
-        }
-
-        public static void AskFirstName(User user)
-        {
             Console.Write("Enter First Name :");
             var firstName = Console.ReadLine();
             if (user.ValidateFirstName(firstName))
@@ -41,7 +27,6 @@ namespace UserRegistrationCode
                 Console.WriteLine("Invalid Last name. " +
                     "It should have minimum 3 letters and only first letter as capital");
         }
-
         public static void AskEmail(User user)
         {
             Console.Write("Enter Email :");
@@ -52,7 +37,6 @@ namespace UserRegistrationCode
                 Console.WriteLine("Invalid email. " +
                     "It should be in the correct format E.g. abc.xyz@bl.co.in");
         }
-
         public static void AskMobileNumber(User user)
         {
             Console.Write("Enter Mobile Number : ");
@@ -63,7 +47,6 @@ namespace UserRegistrationCode
                 Console.WriteLine("Invalid Moobile Number. " +
                     "It should be in the correct format E.g. 91 9919819801");
         }
-
         public static void AskPassword(User user)
         {
             Console.Write("Enter Password : ");

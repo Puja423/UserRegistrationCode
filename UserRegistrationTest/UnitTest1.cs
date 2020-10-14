@@ -1,32 +1,29 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
-using System.Reflection.Metadata.Ecma335;
 using System.Text;
-using System.Text.RegularExpressions;
 using UserRegistrationCode;
-
-
-namespace UserRegistrationTest
+namespace UserRegistrationTests
 {
     [TestClass]
-    public class UnitTest1
+    public class UserTest
     {
         [TestMethod]
         public void VerifyFirstName_StartsWith_CapitalOrNot()
         {
             User user = new User();
-            var firstName = "Puja";
+            var firstName = "Priya";
             var result = user.ValidateFirstName(firstName); ;
             Assert.IsTrue(result);
         }
+
         [TestMethod]
         public void VerifyLastName_StartsWith_CapitalOrNot()
         {
             User user = new User();
-            var lastName = "Yadav";
+            var lastName = "Biriya";
             var result = user.ValidateLastName(lastName); ;
+            Assert.IsTrue(result);
         }
-
 
         [TestMethod]
         [DataRow("jrm@gmail.com")]
@@ -54,10 +51,8 @@ namespace UserRegistrationTest
             //Arrange
             User user = new User();
             bool expected = true;
-
             //Act
             bool actual = user.ValidateMobileNumber(phNum);
-
             //Assert
             Assert.AreEqual(expected, actual);
         }
@@ -65,15 +60,13 @@ namespace UserRegistrationTest
         [DataRow("Had2Te#t")]
         [DataRow("had2T3stP@ss")]
         [DataRow("T3STP@SS")]
-        public void TestPasswordValidation_ValidPasswords(string pass)
+        public void Test_ValidPasswords(string pass)
         {
             //Arrange
             User user = new User();
             bool expected = true;
-
             //Act
             bool actual = user.ValidatePassword(pass);
-
             //Assert
             Assert.AreEqual(expected, actual);
         }
