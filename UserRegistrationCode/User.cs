@@ -3,51 +3,150 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace UserRegistrationCode
+namespace UserRegistration
 {
-
-    public class User
+    class User
     {
-        public string firstName { get; set; }
-        private string _regexFirstName = "^[A-Z][a-z]{2,}$";
-        public string lastName { get; set; }
-        private string _regexLastName = "^[A-Z][a-z]{2,}$";
+        string _firstName;
+        string _lastName;
+        string _eMail;
+        string _phoneNumber;
+        string _password;
 
-        public string email { get; set; }
-        private string _regexEmail = "^[A-Za-z0-9]+([._+-][A-Za-z0-9]+)*[@][A-Za-z0-9]+[.][a-zA-Z]{2,3}([.][a-zA-Z]{2})?$";
+        string _regex = "";
 
-        public string password { get; set; }
-        private string _regexPassword = "^(?=.*[A-Z])(?=.*[0-9])[\\S]{8,}$";
-
-        public string mobileNumber { get; set; }
-        private string _regexMobileNumber = "^[0-9]{2}[ ][1-9][0-9]{9}$";
-
-
-        public bool ValidateFirstName(string firstName)
+        public User()
         {
-            return Regex.IsMatch(firstName, _regexFirstName);
+            this._firstName = "";
+            this._lastName = "";
+            this._eMail = "";
+            this._phoneNumber = "";
+            this._password = "";
         }
 
-        public bool ValidateLastName(string lastName)
+        public string FirstName { get => _firstName; }
+        public string LastName { get => _lastName; }
+        public string EMail { get => _eMail; }
+        public string PhoneNumber { get => _phoneNumber; }
+
+        public void VerifyFirstName()
         {
-            return Regex.IsMatch(lastName, _regexLastName);
+            Console.Write("Enter first name : ");
+            string fName = Console.ReadLine();
+            _regex = "^[A-Z][a-z A-Z]{2,}$";
+            Regex rgxObj = new Regex(_regex);
+            if (rgxObj.IsMatch(fName))
+                _firstName = fName;
+            else
+            {
+                Console.WriteLine("The first name should have\n" +
+                    "1. Min 3 characters\n" +
+                    "2. First letter in upper case");
+                VerifyFirstName();
+            }
         }
 
-        public bool ValidateEmail(string email)
+        public void VerifyLastName()
         {
-            return Regex.IsMatch(email, _regexEmail);
+            Console.Write("Enter last name : ");
+            string lName = Console.ReadLine();
+            _regex = "^[A-Z][a-zA-Z]{2,}$";
+            Regex rgxObj = new Regex(_regex);
+            if (rgxObj.IsMatch(lName))
+                _lastName = lName;
+            else
+            {
+                Console.WriteLine("The last name should have\n" +
+                    "1. Min 3 characters\n" +
+                    "2. First letter in upper case");
+                VerifyLastName();
+            }
         }
 
-        public bool ValidatePassword(string password)
+        public void VerifyEmail()
         {
-            return Regex.IsMatch(password, _regexPassword);
+            Console.Write("Enter Email Id : ");
+            string email = Console.ReadLine();
+            _regex = "^[a-z1-9]{1,}(.[a-z1-9]{1,}){0,}@[a-z]{1,}[.]{1}[a-z]{1,}(.[a-z]{1,}){0,}$";
+            Regex rgxObj = new Regex(_regex);
+            if (rgxObj.IsMatch(email))
+                _eMail = email;
+            else
+            {
+                Console.WriteLine("The Email Id should be in \" abc.xyz@bl.co.in \" format\n" +
+                    "(xyz & in parts optional)");
+                VerifyEmail();
+            }
         }
-        public bool ValidateMobileNumber(string mobileNumber)
+
+        public void VerifyPhoneNumber()
         {
-            return Regex.IsMatch(mobileNumber, _regexMobileNumber);
+            Console.Write("Phone Number : ");
+            string phNum = Console.ReadLine();
+            _regex = "^[0-9]{2} [0-9]{10}$";
+            Regex rgxObj = new Regex(_regex);
+            if (rgxObj.IsMatch(phNum))
+                _phoneNumber = phNum;
+            else
+            {
+                Console.WriteLine("The phone number should have\n" +
+                    "1. 2 digit country code followed by space \n" +
+                    "2. 10 digit number");
+                VerifyPhoneNumber();
+            }
         }
+
+        private bool VerifyRule1(string pass)
+        {
+            _regex = "^[A-Za-z0-9_@#$%&*-]{8,}$";
+            Regex rgxObj = new Regex(_regex);
+            return rgxObj.IsMatch(pass);
+        }
+
+        private bool VerifyRule2(string pass)
+        {
+            _regex = "^.*[A-Z]+.*$";
+            Regex rgxObj = new Regex(_regex);
+            return rgxObj.IsMatch(pass);
+        }
+
+        private bool VerifyRule3(string pass)
+        {
+            _regex = "^.*[0-9]+.*$";
+            Regex rgxObj = new Regex(_regex);
+            return rgxObj.IsMatch(pass);
+        }
+
+        private bool VerifyRule4(string pass)
+        {
+            _regex = "^[A-Za-z0-9]*[!@#$%&*_-][A-Za-z0-9]*$";
+            Regex rgxObj = new Regex(_regex);
+            return rgxObj.IsMatch(pass);
+        }
+
+        public void VerifyPassword()
+        {
+            Console.WriteLine("Password needs to have \n" +
+                    "1. Minimum 8 characters\n" +
+                    "2. At least 1 upper case character\n" +
+                    "3. At least 1 numeric value\n" +
+                    "4. Exactly 1 special character\n");
+
+            Console.Write("Password : ");
+            string pass = Console.ReadLine();
+
+            if (VerifyRule1(pass) && VerifyRule2(pass) && VerifyRule3(pass) && VerifyRule4(pass))
+            {
+                _password = pass;
+                Console.WriteLine("Password created successfully");
+            }
+            else
+            {
+                VerifyPassword();
+            }
+        }
+
 
     }
 }
-
 
