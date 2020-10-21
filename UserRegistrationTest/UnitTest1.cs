@@ -1,228 +1,191 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
-using System.Text;
+using RegexUserRegistration;
 using UserRegistration;
-using UserRegistrationCode;
-namespace UserValidationTesting
+
+namespace UserRegistrationUnitTest
 {
     [TestClass]
-    public class ValidationTesting
+    public class UnitTest1
     {
         [TestMethod]
-        [DataRow("Jyoti")]
-        [DataRow("JYOTI")]
-        [DataRow("Jyoti Ranjan")]
-        public void Test_ValidFirstNames(string fName)
+        public void when_all_Details_in_correct_format_should_return_Valid()
         {
-            //Arrange
-            User user = new User();
-            bool expected = true;
-
-            //Act
-            bool actual = user.VerifyFirstName(fName);
-
-            //Assert
-            Assert.AreEqual(expected, actual);
+            Patterns pattern = new Patterns();
+            string firstNameTest = pattern.ValidateName("Ramesh");
+            string lastNameTest = pattern.ValidateName("Verma");
+            string mobileTest = pattern.ValidateMobile("91 7342043811");
+            string emailTest = pattern.ValidateEmail("mihir2233@gmail.com");
+            string passTest = pattern.ValidatePassword("ABcde@123");
+            Assert.AreEqual("Valid", firstNameTest);
+            Assert.AreEqual("Valid", lastNameTest);
+            Assert.AreEqual("Valid", mobileTest);
+            Assert.AreEqual("Valid", emailTest);
+            Assert.AreEqual("Valid", passTest);
         }
-
         [TestMethod]
-        [DataRow("Jr")]
-        [DataRow("jyoti")]
-        [DataRow("Jy@ti")]
-        public void Test_InvalidFirstNames(string fName)
+        public void when_any_Detail_is_not_in_correct_format_should_return_Invalid()
         {
-            //Arrange
-            User user = new User();
-            string expected = "First name needs min 3 characters and first letter in upper case";
-            string actual;
-            //Act
+            Patterns pattern = new Patterns();
+            string firstNameTest = pattern.ValidateName("Ra");
+            string lastNameTest = pattern.ValidateName("V");
+            string mobileTest = pattern.ValidateMobile("91 7342811");
+            string emailTest = pattern.ValidateEmail("mihir@gmail");
+            string passTest = pattern.ValidatePassword("abcde");
+            Assert.AreEqual("Invalid", firstNameTest);
+            Assert.AreEqual("Invalid", lastNameTest);
+            Assert.AreEqual("Invalid", mobileTest);
+            Assert.AreEqual("Invalid", emailTest);
+            Assert.AreEqual("Invalid", passTest);
+        }
+        [TestMethod]
+        [DataRow("xyz@gmail.com")]
+        [DataRow("xyz123@gmail.com")]
+        [DataRow("xyz123pqr@gmail.com")]
+        [DataRow("abc123@gml.com")]
+        [DataRow("abc.123@gmail.co.in")]
+        public void Validate_Multiple_Email_Enteries(string email)
+        {
+            Patterns pattern = new Patterns();
+            string result = pattern.ValidateEmail(email);
+            Assert.AreEqual("Valid", result);
+        }
+        [TestMethod]
+        public void Given_Empty_FirstName_Should_Throw_UserRegistrationException_Indicating_EmptyInput()
+        {
             try
             {
-                actual = user.VerifyFirstName(fName).ToString();
+                string name = string.Empty;
+                Patterns pattern = new Patterns();
+                string result = pattern.ValidateName(name);
             }
-            catch (ValidationException e)
+            catch (UserRegistrationCustomException e)
             {
-                actual = e.Message;
+                Assert.AreEqual("Name should not be empty", e.Message);
             }
-
-            //Assert
-            Assert.AreEqual(expected, actual);
         }
-
         [TestMethod]
-        [DataRow("Mishra")]
-        [DataRow("MISHRA")]
-        public void Test_ValidLastNames(string lName)
+        public void Given_NULL_FirstName_Should_Throw_UserRegistrationException()
         {
-            //Arrange
-            User user = new User();
-            bool expected = true;
-
-            //Act
-            bool actual = user.VerifyLastName(lName);
-
-            //Assert
-            Assert.AreEqual(expected, actual);
-        }
-
-        [TestMethod]
-        [DataRow("Mi")]
-        [DataRow("mishra")]
-        [DataRow("Mis#ra")]
-        public void Test_InvalidLastNames(string lName)
-        {
-            //Arrange
-            User user = new User();
-            string expected = "Last name needs min 3 characters and first letter in upper case";
-            string actual;
-            //Act
             try
             {
-                actual = user.VerifyLastName(lName).ToString();
+                string name = null;
+                Patterns pattern = new Patterns();
+                string result = pattern.ValidateName(name);
             }
-            catch (ValidationException e)
+            catch (UserRegistrationCustomException e)
             {
-                actual = e.Message;
+                Assert.AreEqual("Name should not be null", e.Message);
             }
-
-            //Assert
-            Assert.AreEqual(expected, actual);
         }
-
-
         [TestMethod]
-        [DataRow("jrm@gmail.com")]
-        [DataRow("jrm.cg@gmail.co.in")]
-        [DataRow("jrm@gmail.co.in")]
-        [DataRow("jrm100@gmail.com")]
-        [DataRow("jrm-nit@1mg.co.in")]
-        public void Test_ValidEmails(string email)
+        public void Given_Empty_LastName_Should_Throw_UserRegistrationException_Indicating_EmptyInput()
         {
-            //Arrange
-            User user = new User();
-            bool expected = true;
-
-            //Act
-            bool actual = user.VerifyEmail(email);
-
-            //Assert
-            Assert.AreEqual(expected, actual);
-        }
-
-        [TestMethod]
-        [DataRow("jrm.@gmail.com")]
-        [DataRow("jrm@cg@gmail.co.in")]
-        [DataRow("jrm@gmail.co.in.uk")]
-        [DataRow("jrm100@.gmail.com")]
-        [DataRow("jrm..nit@1mg.com")]
-        [DataRow("jrm.nit.@gmail.com")]
-        [DataRow("jrm..nit@1mg.23")]
-        public void Test_InvalidEmails(string email)
-        {
-            //Arrange
-            User user = new User();
-            string expected = "Email id should be in \" abc.xyz@bl.co.in \" format (.xyz & .in parts optional)";
-            string actual;
-            //Act
             try
             {
-                actual = user.VerifyEmail(email).ToString();
+                string name = string.Empty;
+                Patterns pattern = new Patterns();
+                string result = pattern.ValidateName(name);
             }
-            catch (ValidationException e)
+            catch (UserRegistrationCustomException e)
             {
-                actual = e.Message;
+                Assert.AreEqual("Name should not be empty", e.Message);
             }
-
-            //Assert
-            Assert.AreEqual(expected, actual);
         }
-
-
         [TestMethod]
-        [DataRow("91 6231230127")]
-        public void Test_ValidNumbers(string phNum)
+        public void Given_NULL_LastName_Should_Throw_UserRegistrationException()
         {
-            //Arrange
-            User user = new User();
-            bool expected = true;
-
-            //Act
-            bool actual = user.VerifyPhNumber(phNum);
-
-            //Assert
-            Assert.AreEqual(expected, actual);
-        }
-
-        [TestMethod]
-        [DataRow("1234567890")]
-        [DataRow("981236540987")]
-        [DataRow("97 0123456789")]
-        [DataRow("97 123456")]
-        [DataRow("9 1234567890")]
-        [DataRow("97 8123456789012")]
-        [DataRow("97 123 456 6789")]
-        public void Test_InvalidNumbers(string phNum)
-        {
-            //Arrange
-            User user = new User();
-            string expected = "Phone number should have 2 digit country code followed by space separated 10 digit number";
-            string actual;
-            //Act
             try
             {
-                actual = user.VerifyPhNumber(phNum).ToString();
+                string name = null;
+                Patterns pattern = new Patterns();
+                string result = pattern.ValidateName(name);
             }
-            catch (ValidationException e)
+            catch (UserRegistrationCustomException e)
             {
-                actual = e.Message;
+                Assert.AreEqual("Name should not be null", e.Message);
             }
-
-            //Assert
-            Assert.AreEqual(expected, actual);
         }
-
         [TestMethod]
-        [DataRow("Had2Te#t")]
-        [DataRow("had2T3stP@ss")]
-        [DataRow("T3STP@SS")]
-        public void Test_ValidPasswords(string pass)
+        public void Given_Empty_Email_Should_Throw_UserRegistrationException_Indicating_EmptyInput()
         {
-            //Arrange
-            User user = new User();
-            bool expected = true;
-
-            //Act
-            bool actual = user.VerifyPassword(pass);
-
-            //Assert
-            Assert.AreEqual(expected, actual);
-        }
-
-        [TestMethod]
-        [DataRow("Hd2T#t")] //less than 8 char
-        [DataRow("had2testPass")] //no special char
-        [DataRow("TestP@ss")] //no number
-        [DataRow("t3stp@ss")] //no upper case
-        [DataRow("T#stP@ss5")] //more than 1 special case
-        public void Test_InvalidPasswords(string pass)
-        {
-            //Arrange
-            User user = new User();
-            string expected = "Password needs to have min 8 characters, at least 1 upper case character, at least 1 numeric value, exactly 1 special character";
-            string actual;
-            //Act
             try
             {
-                actual = user.VerifyPassword(pass).ToString();
+                string email = string.Empty;
+                Patterns pattern = new Patterns();
+                string result = pattern.ValidateEmail(email);
             }
-            catch (ValidationException e)
+            catch (UserRegistrationCustomException e)
             {
-                actual = e.Message;
+                Assert.AreEqual("Email should not be empty", e.Message);
             }
-
-            //Assert
-            Assert.AreEqual(expected, actual);
         }
-
+        [TestMethod]
+        public void Given_NULL_Email_Should_Throw_UserRegistrationException()
+        {
+            try
+            {
+                string email = null;
+                Patterns pattern = new Patterns();
+                string result = pattern.ValidateEmail(email);
+            }
+            catch (UserRegistrationCustomException e)
+            {
+                Assert.AreEqual("Email should not be null", e.Message);
+            }
+        }
+        public void Given_Empty_Mobile_Should_Throw_UserRegistrationException_Indicating_EmptyInput()
+        {
+            try
+            {
+                string mobile = string.Empty;
+                Patterns pattern = new Patterns();
+                string result = pattern.ValidateMobile(mobile);
+            }
+            catch (UserRegistrationCustomException e)
+            {
+                Assert.AreEqual("Mobile Number should not be empty", e.Message);
+            }
+        }
+        [TestMethod]
+        public void Given_NULL_Mobile_Should_Throw_UserRegistrationException()
+        {
+            try
+            {
+                string mobile = null;
+                Patterns pattern = new Patterns();
+                string result = pattern.ValidateMobile(mobile);
+            }
+            catch (UserRegistrationCustomException e)
+            {
+                Assert.AreEqual("Mobile Number should not be null", e.Message);
+            }
+        }
+        public void Given_Empty_Password_Should_Throw_UserRegistrationException_Indicating_EmptyInput()
+        {
+            try
+            {
+                string pw = string.Empty;
+                Patterns pattern = new Patterns();
+                string result = pattern.ValidatePassword(pw);
+            }
+            catch (UserRegistrationCustomException e)
+            {
+                Assert.AreEqual("Password should not be empty", e.Message);
+            }
+        }
+        [TestMethod]
+        public void Given_NULL_Password_Should_Throw_UserRegistrationException()
+        {
+            try
+            {
+                string pw = null;
+                Patterns pattern = new Patterns();
+                string result = pattern.ValidatePassword(pw);
+            }
+            catch (UserRegistrationCustomException e)
+            {
+                Assert.AreEqual("Password should not be null", e.Message);
+            }
+        }
     }
 }

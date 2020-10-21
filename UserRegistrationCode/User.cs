@@ -1,111 +1,120 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.RegularExpressions;
+using UserRegistration;
 
-namespace UserRegistration
+namespace RegexUserRegistration
 {
-    public class User
+    public class Patterns
     {
-        string _firstName;
-        string _lastName;
-        string _eMail;
-        string _phoneNumber;
-        string _password;
+        string Name = "^[A-Z][a-z0-9A-Z]{3,}";
+        string EmailId = "^[a-z0-9A-Z]+([._+-][a-z0-9A-Z]+)*[@][a-z0-9A-Z]+[.][a-zA-Z]{2,3}(.[a-zA-Z]{2,})?$";
+        string mobileNo = "^[0-9]{1,3}[ ][1-9]{1}[0-9]{9}$";
+        string Password = "^((?=.*[A-Z])(?=.*[0-9])(?=^[a-zA-Z0-9]*[!@$#&*_+-]{1}[a-zA-Z0-9]).{8,})";
 
-        string _regex = "";
-
-        public User()
+        public string ValidateName(string name)
         {
-            this._firstName = "";
-            this._lastName = "";
-            this._eMail = "";
-            this._phoneNumber = "";
-            this._password = "";
-        }
-
-        public string FirstName { get => _firstName; }
-        public string LastName { get => _lastName; }
-        public string EMail { get => _eMail; }
-        public string PhoneNumber { get => _phoneNumber; }
-
-        private bool Validate(string strToValidate, string regex)
-        {
-            Regex rgxObj = new Regex(_regex);
-            return rgxObj.IsMatch(strToValidate);
-        }
-
-        public bool VerifyFirstName(string fName)
-        {
-            _regex = "^[A-Z][a-z A-Z]{2,}$";
-            if (Validate(fName, _regex))
-                return true;
-            else
+            try
             {
-                string rule = "First name needs min 3 characters and first letter in upper case";
-                throw new ValidationException(ValidationException.InvalidationType.INVALID_FIRST_NAME, rule);
-            }
-        }
-
-        public bool VerifyLastName(string lName)
-        {
-            _regex = "^[A-Z][a-z A-Z]{2,}$";
-            if (Validate(lName, _regex))
-                return true;
-            else
-            {
-                string rule = "Last name needs min 3 characters and first letter in upper case";
-                throw new ValidationException(ValidationException.InvalidationType.INVALID_LAST_NAME, rule);
-            }
-        }
-
-        public bool VerifyEmail(string eMail)
-        {
-            _regex = "^[a-z0-9A-Z]+([-.+_][a-z0-9+-]+)*@[a-z0-9A-Z]+[.][a-z]{2,3}([.][a-z]{2,})?$";
-            if (Validate(eMail, _regex))
-                return true;
-            else
-            {
-                string rule = "Email id should be in \" abc.xyz@bl.co.in \" format (.xyz & .in parts optional)";
-                throw new ValidationException(ValidationException.InvalidationType.INVALID_EMAIL, rule);
-            }
-        }
-
-        public bool VerifyPhNumber(string phNum)
-        {
-            _regex = "^[0-9]{2}[ ][1-9][0-9]{9}$";
-            if (Validate(phNum, _regex))
-                return true;
-            else
-            {
-                string rule = "Phone number should have 2 digit country code followed by space separated 10 digit number";
-                throw new ValidationException(ValidationException.InvalidationType.INVALID_PHONE_NUMBER, rule);
-            }
-        }
-
-        public bool VerifyPassword(string pass)
-        {
-            _regex = "((?=^.*[0-9].*$)(?=^.*[A-Z].*$)(?=^[a-zA-Z0-9]*[!@#$%&*+_]{1}[a-zA-Z0-9]*$).{8,})";
-            if (Validate(pass, _regex))
-                return true;
-            else
-            {
-                string rule = "Password needs to have min 8 characters, at least 1 upper case character, at least 1 numeric value, exactly 1 special character";
-                throw new ValidationException(ValidationException.InvalidationType.INVALID_PASSWORD, rule);
-            }
-        }
-
-        public void VerifiedEmailList(List<string> emailList)
-        {
-            foreach (string email in emailList)
-            {
-                if (VerifyEmail(email))
-                    Console.WriteLine(email + "- VALID");
+                if (name.Equals(string.Empty))
+                {
+                    throw new UserRegistrationCustomException(UserRegistrationCustomException.ExceptionType.EMPTY_INPUT, "Name should not be empty");
+                }
+                else if (Regex.IsMatch(name, Name))
+                {
+                    Console.WriteLine("Name is valid");
+                    return "Valid";
+                }
                 else
-                    Console.WriteLine(email + "- INVALID");
+                {
+                    Console.WriteLine("Name not valid");
+                    return "Invalid";
+                }
+            }
+            catch (NullReferenceException)
+            {
+                throw new UserRegistrationCustomException(UserRegistrationCustomException.ExceptionType.NULL_INPUT, "Name should not be null");
             }
         }
+        public string ValidateEmail(string email)
+        {
+            try
+            {
+                if (email.Equals(string.Empty))
+                {
+                    throw new UserRegistrationCustomException(UserRegistrationCustomException.ExceptionType.EMPTY_INPUT, "Email should not be empty");
+                }
+                if (Regex.IsMatch(email, EmailId))
+                {
+                    Console.WriteLine("Email id is valid");
+                    return "Valid";
+                }
+                else
+                {
+                    Console.WriteLine("Email id not valid");
+                    return "Invalid";
+                }
+            }
+            catch (NullReferenceException)
+            {
+                throw new UserRegistrationCustomException(UserRegistrationCustomException.ExceptionType.NULL_INPUT, "Email should not be null");
+            }
+        }
+        public string ValidateMobile(string mobile)
+        {
+            try
+            {
+                if (mobile.Equals(string.Empty))
+                {
+                    throw new UserRegistrationCustomException(UserRegistrationCustomException.ExceptionType.EMPTY_INPUT, "Mobile Number should not be empty");
+                }
+                if (Regex.IsMatch(mobile, mobileNo))
+                {
+                    Console.WriteLine("mobile number is valid");
+                    return "Valid";
+                }
+                else
+                {
+                    Console.WriteLine("mobile number not valid");
+                    return "Invalid";
+                }
+            }
+            catch (NullReferenceException)
+            {
+                throw new UserRegistrationCustomException(UserRegistrationCustomException.ExceptionType.NULL_INPUT, "Mobile Number should not be null");
+            }
+
+        }
+        public string ValidatePassword(string pw)
+        {
+            try
+            {
+                if (pw.Equals(string.Empty))
+                {
+                    throw new UserRegistrationCustomException(UserRegistrationCustomException.ExceptionType.EMPTY_INPUT, "Password should not be empty");
+                }
+                if (Regex.IsMatch(pw, Password))
+                {
+                    Console.WriteLine("Password is valid");
+                    return "Valid";
+                }
+                else
+                {
+                    Console.WriteLine("Password not valid");
+                    return "Invalid";
+                }
+            }
+            catch (NullReferenceException)
+            {
+                throw new UserRegistrationCustomException(UserRegistrationCustomException.ExceptionType.NULL_INPUT, "Password should not be null");
+            }
+        }
+        public bool ValidateNameUsingLambda(string name) => Regex.IsMatch(name, Name) ? true : throw new UserRegistrationCustomException(UserRegistrationCustomException.ExceptionType.INVALID_NAME, "Invalid Name");
+        public bool ValidateEmailUsingLambda(string email) => Regex.IsMatch(email, EmailId) ? true : throw new UserRegistrationCustomException(UserRegistrationCustomException.ExceptionType.INVALID_EMAIL, "Invalid Email");
+        public bool ValidateMobileUsingLambda(string mobile) => Regex.IsMatch(mobile, mobileNo) ? true : throw new UserRegistrationCustomException(UserRegistrationCustomException.ExceptionType.INVALID_PASSWORD, "Invalid Password");
+        public bool ValidatePasswordUsingLambda(string passw) => Regex.IsMatch(passw, Password) ? true : throw new UserRegistrationCustomException(UserRegistrationCustomException.ExceptionType.INVALID_MOBILE, "Invalid Mobile Number");
+
+
     }
 }
-
